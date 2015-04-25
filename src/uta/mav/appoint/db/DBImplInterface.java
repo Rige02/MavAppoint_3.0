@@ -11,11 +11,7 @@ import uta.mav.appoint.beans.AppointmentType;
 import uta.mav.appoint.beans.CreateAdvisorBean;
 import uta.mav.appoint.beans.GetSet;
 import uta.mav.appoint.beans.RegisterBean;
-import uta.mav.appoint.login.AdminUser;
-import uta.mav.appoint.login.AdvisorUser;
-import uta.mav.appoint.login.Department;
-import uta.mav.appoint.login.LoginUser;
-import uta.mav.appoint.login.StudentUser;
+import uta.mav.appoint.login.*;
 
 public interface DBImplInterface {
 	public Boolean cancelAppointment(int id) throws SQLException;
@@ -24,6 +20,7 @@ public interface DBImplInterface {
 	public ArrayList<Object> getAppointments(AdminUser user) throws SQLException;
 	public Boolean createAppointment(Appointment a, String email) throws SQLException;
 	public ArrayList<TimeSlotComponent> getAdvisorSchedule(String name) throws SQLException;
+	public ArrayList<TimeSlotComponent> getAdvisorSchedules(ArrayList<AdvisorUser> advisorUsers) throws SQLException;
 	public Boolean createStudent(StudentUser studentUser) throws SQLException;
 	public ArrayList<String> getAdvisors() throws SQLException;
 	public AdvisorUser getAdvisor(String email) throws SQLException;
@@ -43,4 +40,9 @@ public interface DBImplInterface {
 	public Boolean updateAdvisors(ArrayList<AdvisorUser> advisorUsers) throws SQLException;
 	public ArrayList<Department> getDepartments() throws SQLException;
 	public Department getDepartmentByName(String name) throws SQLException;
+	public Boolean updateUser(LoginUser loginUser) throws SQLException;
+	public StudentUser getStudent(String email);
+	public AdminUser getAdmin(String email);
+	public FacultyUser getFaculty(String email);
+	
 }

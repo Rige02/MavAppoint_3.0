@@ -1,32 +1,39 @@
 <jsp:include page='<%=(String) request.getAttribute("includeHeader")%>' />
 <%@ page import="java.util.ArrayList"%>
+<%@ page import ="uta.mav.appoint.login.Department"%>
+<%@ page import ="uta.mav.appoint.login.AdvisorUser"%>
 
 <% ArrayList<String> array = (ArrayList<String>)session.getAttribute("advisors");
-	if (array != null){ %>
+	if (array != null){ 
 	
-<% ArrayList<String> departments = (ArrayList<String>)session.getAttribute("departments");
-%>
+ArrayList<Department> departments = (ArrayList<Department>)session.getAttribute("departments");
 
-<% ArrayList<String> degreeType = (ArrayList<String>)session.getAttribute("degreeType");
-%>
-	
-<% ArrayList<String> major = (ArrayList<String>)session.getAttribute("major");
+ArrayList<String> degreeType = (ArrayList<String>)session.getAttribute("degreeType");
+
+ArrayList<String> major = (ArrayList<String>)session.getAttribute("major");
+
+ArrayList<Character> letters = (ArrayList<Character>)session.getAttribute("letters");
+
 %>
 	
 <div class="container">
+		<form action="advising" method="post" name="advisor_form">
 	<div class="row">
     <div class="col-md-2">
         <label for="drp_department"><font color="#e67e22" size="4">Department</label> 
+
 		<br>
-		<select id="drp_department" class="btn btn-default btn-lg dropdown-toggle">
-			<option value="select">Select</option>
+		<select id="drp_department" onchange = "submit();" name = "drp_department" class="btn btn-default btn-lg dropdown-toggle">
 			<%
-							for (int i=0;i<departments.size();i++){
-								
-								%>
-					<option value="option<%=i%>"><%=departments.get(i)%></option>
-					<%	}%>
-				</form>
+
+			for (int i=0;i<departments.size();i++){
+				
+				%>
+				<option id="option" value = <%=i%>> <%=departments.get(i).getName()%></option>
+		<%	}%>
+			
+
+
 
 		</select> 
 
@@ -36,46 +43,72 @@
         <label for="drp_degreeType"><font color="#e67e22" size="4">Degree Type</font></label> 
 		<br>
 		<select id="drp_degreeType" class="btn btn-default btn-lg dropdown-toggle">
-			<option value="select">Select</option>
 			<%
 							for (int i=0;i<degreeType.size();i++){
 								
 								%>
-					<option value="option<%=i%>"><%=degreeType.get(i)%></option>
+					<option id = "degree" onclick = "selectdegreetype()" value="option<%=i%>"><%=degreeType.get(i)%></option>
 					<%	}%>
 				</form>
+				<script>function selectdegreetype(){
+						document.getElementById("degree").value;
+						advisor_form.submit();
+					 }
+				</script>
 		</select> 
 		<br>
 
     </div>
-    <div class="col-md-2">
+    <div class="col-md-4">
 
         <label for="drp_major"><font color="#e67e22" size="4">Major</font></label> 
-		<br>
+        <br>
 		<select id="drp_major" class="btn btn-default btn-lg dropdown-toggle">
-			<option value="select">Select</option>
 				<%
 							for (int i=0;i<major.size();i++){
 								
 								%>
-					<option value="option<%=i%>"><%=major.get(i)%></option>
+					<option id = "major" onclick = "selectmajor()" value="option<%=i%>"><%=major.get(i)%></option>
 					<%	}%>
 				</form>
+					<script>function selectmajor(){
+						document.getElementById("major").value;
+						advisor_form.submit();
+					 }
+				</script>
 		</select> 
 		<br>
 
     </div>
     
-    <div class="col-md-6"></div>
-    <br>
-	</div>
+    <div class="col-md-4"></div>
+    <label for="drp_lastName"><font color="#e67e22" size="4">Last Name</font></label> 
+		<br>
+		<select id="drp_major" class="btn btn-default btn-lg dropdown-toggle">
+				<%
+							for (int i=0;i<letters.size();i++){
+								
+								%>
+					<option id = "letter" onclick = "selectLetter()" value="option<%=i%>"><%=letters.get(i)%></option>
+					<%	}%>
+				</form>
+			
+					<script>function selectLetter(){
+						document.getElementById("letter").value;
+						advisor_form.submit();
+					 }
+				</script>
+		</select> 
+		<br>
+
+    </div>
 	<div class="page-header">
 
 
 
 		<div class="pull-right form-inline">
 			<div class="btn-group">
-				<form action="advising" method="post" name="advisor_form">
+		
 					<input type=hidden name=advisor_button id="advisor_button">
 
 					<!-- begin processing advisors  -->

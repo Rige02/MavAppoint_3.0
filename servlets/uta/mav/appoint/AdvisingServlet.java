@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import uta.mav.appoint.db.DatabaseManager;
+import uta.mav.appoint.login.AdvisorUser;
+import uta.mav.appoint.login.Department;
 import uta.mav.appoint.login.LoginUser;
 
 /**
@@ -34,6 +36,14 @@ public class AdvisingServlet extends HttpServlet{
 		degreeType.add("Doctorate");
 		session.setAttribute("degreeType", degreeType);
 		
+		ArrayList<Character> letters = new ArrayList<>();
+		char ch;
+		for(ch = 'A'; ch <= 'Z'; ch++)
+		{
+			letters.add(ch);
+		}
+		session.setAttribute("letters", letters);
+		
 		LoginUser user = (LoginUser)session.getAttribute("user");
 		if (user == null){
 			user = new LoginUser();
@@ -42,7 +52,7 @@ public class AdvisingServlet extends HttpServlet{
 		try{
 			//get departments from database
 				DatabaseManager dbm = new DatabaseManager();
-				ArrayList<String> departments = dbm.getDepartmentStrings();
+				ArrayList<Department> departments = dbm.getDepartments();
 				session.setAttribute("departments", departments);
 				
 				//get majors from database
@@ -73,18 +83,28 @@ public class AdvisingServlet extends HttpServlet{
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
+
 		LoginUser user = (LoginUser)session.getAttribute("user");
 		if (user == null){
 			user = new LoginUser();
 		}
+		
+		
 		try{
 					header = "templates/" + user.getHeader() + ".jsp";
+					
+					String dept = request.getParameter("drp_department");
+					
+					
+					
+					
 					DatabaseManager dbm = new DatabaseManager();
 					ArrayList<String> array =  dbm.getAdvisors();
 					if (array.size() != 0){
 						session.setAttribute("advisors", array);
 					}					
 					//get advisor schedules
+					
 					String advisor = (String)request.getParameter("advisor_button");
 					ArrayList<TimeSlotComponent> schedule;
 					if (advisor != null){
@@ -93,6 +113,21 @@ public class AdvisingServlet extends HttpServlet{
 					else{
 						schedule = dbm.getAdvisorSchedule("all");
 					}
+					
+					if(dept != null)
+					{
+						//get departments from database
+						ArrayList<Department> departments = dbm.getDepartments();
+						
+						int departmentNum = Integer.parseInt(dept);
+						
+						//get advisors by the department that was selected
+						ArrayList<AdvisorUser> advisors = dbm.getAdvisorsOfDepartment(departments.get(departmentNum).getName());
+						
+						//session.setAttribute("advisors", advisors);
+						schedule = dbm.getAdvisorSchedules(advisors);
+					}
+					
 						session.setAttribute("schedules", schedule);
 		}
 		catch(Exception e){
